@@ -1,0 +1,366 @@
+{% extends "kitchen/base.html" %}
+{% load static %}
+{% block start %}<div class="container-xxl py-5">
+    <div class="container">
+        <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+            <h5 class="section-title ff-secondary text-center fw-normal mb-5" style="color: #FEA116;">Orders</h5>
+            <div class="tab-class text-center wow fadeInUp" data-wow-delay="0.1s">
+                <div class="tab-content">
+                    <div id="tab-1" class="tab-pane fade show p-0 active">
+                        <div class="row g-4">
+                            
+
+<!-- DataTables CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+<!-- DataTables JS -->
+<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
+<style>
+    /* Container styling */
+.container {
+    padding: 20px;
+}
+
+/* Card styling */
+.card {
+    background-color: #ffffff; /* White background for cards */
+    border: none;
+    border-radius: 15px; /* Rounded corners */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Soft shadow */
+    transition: transform 0.3s, box-shadow 0.3s; /* Smooth transition on hover */
+}
+
+.card:hover {
+    transform: translateY(-5px); /* Slight lift effect on hover */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); /* Enhanced shadow on hover */
+}
+
+/* Badge styling */
+.badge {
+    background-color: #e84393; /* Bright color for the badge */
+    color: white;
+    padding: 10px 20px; /* Padding for badge */
+    border-radius: 20px; /* Rounded badge */
+    font-size: 24px; /* Font size for table number */
+}
+
+/* Header styling */
+h6 {
+    margin: 10px 0; /* Margin for headings */
+    padding: 10px 15px; /* Padding for headings */
+    border-radius: 15px; /* Rounded corners */
+    font-weight: bold; /* Bold font */
+}
+
+/* Styling for pending orders heading */
+h6.bg-pending {
+    background-color: #fe4c16; /* Pending orders background color */
+    color: white; /* Text color */
+}
+
+/* Styling for confirmed orders heading */
+h6.bg-confirmed {
+    background-color: #fea116; /* Confirmed orders background color */
+    color: black; /* Text color */
+}
+
+/* Table styling */
+table {
+    width: 100%; /* Full width for tables */
+    border-collapse: collapse; /* Collapse borders */
+    margin: 10px 0; /* Margin for tables */
+}
+
+/* Table header styling */
+th {
+    background-color: #f2f2f2; /* Light grey background for header */
+    padding: 10px; /* Padding for cells */
+    text-align: left; /* Left align text */
+    font-weight: bold; /* Bold font for headers */
+}
+
+/* Table cell styling */
+td {
+    padding: 10px; /* Padding for cells */
+    border-bottom: 1px solid #ddd; /* Border for rows */
+}
+
+/* Button styling */
+button {
+    background-color: #feaf39; /* Button background color */
+    color: white; /* Button text color */
+    border: none; /* No border */
+    border-radius: 5px; /* Rounded corners */
+    padding: 8px 12px; /* Padding for button */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s; /* Smooth transition */
+}
+
+button:hover {
+    background-color: #d6367e; /* Darker shade on hover */
+}
+</style>
+
+
+<div class="container">
+    <div class="row">
+        {% for table_number, orders in tables_with_orders.items %}
+        <div class="col-lg-6 mb-4">
+            <div class="card border-0 shadow-lg rounded-lg h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-center align-items-center mb-3">
+                        <span class="badge" style="background-color: #221f1c; color: white; padding: 10px 30px; border-radius: 25px; font-size: 28px;">
+                            Table: {{ table_number }}
+                        </span>
+                    </div>
+
+                    <!-- Pending Orders for the table -->
+                    {% comment %} <h6 style="margin-top: 10px; background-color: #fe4c16; color: black; font-weight: 500; padding: 8px 15px; font-size: 24px; margin-bottom: 10px; border-radius: 25px; line-height: 0.5; text-align: left;">
+                        Pending Orders
+                    </h6>
+                    <div class="order-info w-100 mt-3">
+                        <table id="pending-orders-{{ table_number }}" class="display">
+                            <thead>
+                                <tr>
+                                    <th>Item Name</th>
+                                    <th>Quantity</th>
+                                    <th>Price</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for order in orders.pending %}
+                                <tr>
+                                    <td>{{ order.name }}</td>
+                                    <td style="text-align: center;">{{ order.quantity }}</td>
+                                    <td style="text-align: center;">{{ order.total_price }}</td>
+                                    <td style="text-align: center;">  <i class="fa-solid fa-xmark"></i> 
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4">No pending orders for this table.</td>
+                                </tr>
+                                
+                                {% endfor %}
+                                
+                            </tbody>
+                        </table> {% endcomment %}
+                        {% comment %} {% if orders.pending %}
+                        <form method="POST" action="{% url 'confirm_all_orders' table_number %}">
+                            {% csrf_token %}
+                            <button type="submit" style="background-color: #fe4c16; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; margin-top: 10px;">
+                                Done
+                            </button>
+                        </form>
+                    {% endif %} {% endcomment %}
+                    {% comment %} <form method="post" action="{% url 'confirm_order' table_number %}">
+                        {% csrf_token %}
+                        <button type="submit" class="done-btn">Done</button>
+                    </form>
+                    
+                    
+                    </div> {% endcomment %}
+<!-- Pending Orders for the table -->
+<h6 style="margin-top: 10px; background-color: #fe4c16; color: black; font-weight: 500; padding: 8px 15px; font-size: 24px; margin-bottom: 10px; border-radius: 25px; line-height: 0.5; text-align: left;">
+    Pending Orders
+</h6>
+<div class="order-info w-100 mt-3">
+    <form method="post" action="{% url 'confirm_order' table_number %}">
+        {% csrf_token %}
+        <table id="pending-orders-{{ table_number }}" class="display">
+            <thead>
+                <tr>
+                    <th>Item Name</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders.pending %}
+                <tr>
+                    <td>{{ order.name }}</td>
+                    <td style="text-align: center;">{{ order.quantity }}</td>
+                    <td style="text-align: center;">{{ order.total_price }}</td>
+                    <td style="text-align: center;">
+                        {% comment %} <i class="fa-solid fa-xmark"></i> {% endcomment %}
+                        <form method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="delete_order_id" value="{{ order.id }}">
+                            <button type="submit" style="background-color: transparent; border: none; color: red; cursor: pointer;">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4">No pending orders for this table.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% if orders.pending %}
+        <button type="submit" class="done-btn" style="background-color: #fe4c16; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-top: 10px;">
+            Done
+        </button>
+        {% endif %}
+    </form>
+</div>
+
+                    <!-- Confirmed Orders for the table -->
+                    <h6 style="margin-top: 10px; background-color: #fea116; color: black; padding: 8px 8px; font-size: 24px; margin-bottom: 10px; border-radius: 15px; line-height: 0.5; text-align: left;">
+                        Confirmed Orders
+                    </h6>
+                    <div class="billing-info w-100 mt-3">
+                        <table id="confirmed-orders-{{ table_number }}" class="display">
+                            <thead>
+                                <tr>
+                                    <th>Item Name</th>
+                                    <th>Quantity</th>
+                                    <th>Price</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for order in orders.confirmed %}
+                                <tr>
+                                    <td>{{ order.name }}</td>
+                                    <td style="text-align: center;">{{ order.quantity }}</td>
+                                    <td style="text-align: center;">{{ order.total_price }}</td>
+                                </tr>
+                                {% comment %} {% empty %}
+                                <tr>
+                                    <td colspan="3">No confirmed orders for this table.</td>
+                                </tr> {% endcomment %}
+                                {% endfor %}
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+
+
+
+{% comment %} 
+{% for table_number, orders in tables_with_orders.items %}
+<h4>Table {{ table_number }}</h4>
+
+<!-- Pending Orders for the table -->
+<h6 style="background-color: #fe4c16; padding: 8px 15px; border-radius: 25px;">Pending Orders</h6>
+<table id="pending-orders-{{ table_number }}">
+    <thead>
+        <tr>
+            <th>Item Name</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for order in orders.pending %}
+        <tr>
+            <td>{{ order.name }}</td>
+            <td style="text-align: center;">{{ order.quantity }}</td>
+            <td style="text-align: center;">{{ order.total_price }}</td>
+            <td style="text-align: center;">
+                {% if order.id %}
+                <form method="POST" action="{% url 'confirm_order' order.id %}">
+                    {% csrf_token %}
+                    <button type="submit">Done</button>
+                </form>
+                {% else %}
+                <p>No valid order ID</p>
+                {% endif %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4">No pending orders for this table.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Confirmed Orders for the table -->
+<h6 style="background-color: #fea116; padding: 8px 15px; border-radius: 25px; margin-top: 10px;">Confirmed Orders</h6>
+<table id="confirmed-orders-{{ table_number }}">
+    <thead>
+        <tr>
+            <th>Item Name</th>
+            <th>Quantity</th>
+            <th>Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for order in orders.confirmed %}
+        <tr>
+            <td>{{ order.name }}</td>
+            <td style="text-align: center;">{{ order.quantity }}</td>
+            <td style="text-align: center;">{{ order.total_price }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="3">No confirmed orders for this table.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endfor %}
+ {% endcomment %}
+<script>
+    $(document).ready(function() {
+        {% for table in tables_with_orders %}
+        $('#table-{{ table.tableNumber }}').DataTable();
+        {% endfor %}
+    });
+{% comment %} 
+    document.querySelectorAll('.confirm-btn').forEach(btn => {
+        btn.addEventListener('click', function(event) {
+            event.preventDefault();
+            const orderId = this.dataset.orderId;
+            fetch(`/confirm-order/${orderId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrftoken,  // Include the CSRF token in your headers
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Move the order from Orders to Billing section
+                    location.reload();  // Optionally, you can reload or dynamically move the row
+                } else {
+                    console.error('Order confirmation failed');
+                }
+            })
+        });
+    }); {% endcomment %}
+    
+</script>
+
+
+
+
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    <!-- Menu End -->
+        
+        {% endblock start %}

@@ -1,0 +1,45 @@
+
+{% extends 'table_home.html'%} 
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+
+    {% block content %}
+    <div class="tab-class  wow fadeInUp" data-wow-delay="0.1s">
+        <h3>In Billing </h3>
+    </div>
+
+
+    
+<!-- Finish Button to delete the item and table number to dstart new session -->
+
+
+<form action="{% url 'cancel_item_finish' %}" method="POST" style="margin-left: 5px;">
+    {% csrf_token %}
+    <button onclick="finishSession()" type="submit">Finish</button>
+</form>
+
+
+
+    <script>
+    function finishSession() {
+        if (confirm("Are you sure you want to finish?")) {
+            localStorage.removeItem('tableNumber');
+            localStorage.removeItem('uniqueID');
+    
+            document.querySelector('.table-number-display').innerText = "";
+            alert('Thank you for visiting!');
+            
+            // Show the popup again for entering table number
+            document.querySelector("#modalOverlay").style.display = "block";
+            document.querySelector(".popup").style.display = "block";
+        }
+    }
+    
+
+</script>
+    {% endblock content %}
+    
+   
+    </html>

@@ -1,0 +1,199 @@
+
+{% extends 'table_home.html'%} 
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+{% block header %}
+    <!-- The header will be inherited from index.html -->
+{% endblock header %}
+
+
+
+
+{% block content %}
+
+<h3 style="margin-top: 10px; background-color: #fc6b3f; color: white; padding: 8px 15px; font-size: 24px; margin-bottom: 15px; border-radius: 5px; line-height: 1.4;">Not Submitted</h3>
+
+
+
+
+
+
+
+<div class="tab-content" style="margin-left: 50px;">
+    <div class="tab-pane fade show active">
+        <div class="row g-4">
+            {% for item in not_submitted_items %}
+                <div class="col-lg-6">
+                    <div class="d-flex align-items-center">
+
+                        <img class="flex-shrink-0 img-fluid rounded" src="{{ item.image }}" alt="{{ item.name }}" style="width: 80px; height: 80px; margin-left:15px;">
+
+
+                        <div class="w-100 d-flex flex-column text-start ps-4">
+                            <h5 class="d-flex justify-content-between border-bottom pb-2">
+                                <h5 style="color: #000000;font-size: 24px;">{{ item.name }}</h5>
+                            </h5>
+                            <p id="quantity-{{ item.id }}" style="color: #000000;font-size: 18px;">Quantity: {{ item.quantity }}</p>
+                        </div>
+
+                        <!-- Decrease Quantity Button -->
+                        
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function() {
+                                // Get all buttons with class 'decrease-btn'
+                                const decreaseButtons = document.querySelectorAll('.decrease-btn');
+                        
+                                decreaseButtons.forEach(button => {
+                                    button.addEventListener('click', function() {
+                                        const itemId = this.getAttribute('data-id');  // Get the item ID from data-id attribute
+                        
+                                        // Send AJAX request to decrease quantity
+                                        fetch(`/table/decrease/${itemId}/`, {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/json',
+                                                'X-CSRFToken': '{{ csrf_token }}'  // Include CSRF token for security
+                                            },
+                                            body: JSON.stringify({
+                                                item_id: itemId
+                                            })
+                                        })
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            if (data.success) {
+                                                // Update the quantity displayed in the UI
+                                                const quantityElement = document.querySelector(`#quantity-${itemId}`);
+                                                quantityElement.textContent = `Quantity: ${data.new_quantity}`;
+                        
+                                                // If the quantity becomes 0, you can remove the item from the UI
+                                                if (data.new_quantity === 0) {
+                                                    document.querySelector(`#item-${itemId}`).remove();
+                                                }
+                                            } else {
+                                                console.error("Failed to decrease quantity");
+                                            }
+                                        })
+                                        .catch(error => console.error('Error:', error));
+                                    });
+                                });
+                            });
+                        </script>
+                        
+
+                        <!-- Cancel Button to delete the item -->
+                        <form action="{% url 'cancel_item' item.id %}" method="POST" style="margin-left: 5px;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn" style="background-color: #FEA116; color: white; border-color: #FEA116;">Cancel</button>
+                            <button type="button" class="btn decrease-btn" data-id="{{ item.id }}" style="background-color: #FEA116; color: white; border-color: #FEA116; margin-top:5px;">
+                                -1
+                           </button>
+                        </form>
+                    </div>
+                </div>
+            {% empty %}
+                <li>No items selected</li>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+
+
+ <form action="{% url 'submit_order' %}" method="POST">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-success" style="margin-top: 20px; margin-left:1150px; margin-bottom:50px; border-color: #31abf2; background-color: #31abf2;">Submit Order</button>
+</form>
+
+<script>
+
+
+
+function FinalOrder(itemId, itemName, itemPrice) {
+    $.ajax({
+        url: "{% url 'add_to_submitted_item' %}",
+        type: "POST",
+        data: {
+            'item_id': itemId,
+            'name': itemName,
+            'price': itemPrice,
+            'csrfmiddlewaretoken': '{{ csrf_token }}'
+        },
+        success: function(response) {
+            let message = "All Orders Submitted.";
+            let alertBox = document.createElement("div");
+            alertBox.innerHTML = `<div class="custom-alert">` + message + `</div>`;
+            document.body.appendChild(alertBox);
+
+            setTimeout(function() {
+                document.body.removeChild(alertBox);
+                location.reload();  // Reload page to reflect the updated state
+            }, 2500);
+        },
+        error: function(response) {
+            alert("Failed to place order.");
+        }
+    });
+}
+</script>
+
+<!-- Styling for the custom alert box -->
+<style>
+.custom-alert {
+    position: fixed;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #ffffff;
+    padding: 20px;
+    color: #000000;
+    font-weight: 600;
+    border: 2px solid rgb(25, 77, 250);
+    border-radius: 4px;
+    font-size: 16px;
+    z-index: 9999;
+}
+</style>
+
+
+
+
+ <h3 style="margin-top: 10px; background-color: #92ee50; color: white; padding: 8px 15px; font-size: 24px; margin-bottom: 15px; border-radius: 5px; line-height: 1.4;margin-right:10px; margin-left:10px;margin-bottom:40px">
+    Submitted
+</h3>
+
+
+
+<div class="tab-content" style="margin-left: 50px;">
+    <div class="tab-pane fade show active">
+        <div class="row g-4">
+            {% for item in submitted_items %}
+                <div class="col-lg-6">
+                    <div class="d-flex align-items-center">
+
+                        <img class="flex-shrink-0 img-fluid rounded" src="{{ item.image }}" alt="{{ item.name }}" style="width: 80px; height: 80px;">
+ 
+                        <div class="w-100 d-flex flex-column text-start ps-4">
+                            <h5 class="d-flex justify-content-between border-bottom pb-2">
+                                <h5 style="color: #000000;font-size: 24px;">{{ item.name }}</h5>
+                            </h5>
+                            <p style="color: #000000;font-size: 18px;">Quantity: {{ item.quantity }}</p>
+                        </div>
+
+                       
+                    </div>
+                </div>
+            {% empty %}
+                <li>No items selected</li>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock content %}
+
+
+</html>

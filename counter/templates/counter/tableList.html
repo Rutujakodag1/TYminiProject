@@ -1,0 +1,42 @@
+{% extends "counter/base.html" %}
+{% load static %}
+{% block table %}
+<div class="content-wrapper">
+<div class="container">
+    <h2 class="text-center"style="color:#feaf39; margin-top: 20px !important;">All Tables</h2>
+    <div class="tables-container">
+        <div class="d-flex flex-wrap">
+            {% for table_number in table_numbers %}
+                <div class="flex-shrink-0 d-flex justify-content-center align-items-center rounded"
+                     style="width: 70px; height: 70px; background-color: #feaf39; color: white; font-size: 24px; margin: 10px;"
+                     data-bs-toggle="modal" data-bs-target="#tableModal" data-table-number="{{ table_number }}">
+                     
+                    {{ table_number }}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="tableModal" tabindex="-1" aria-labelledby="tableModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="tableModalLabel">Receipt</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id ="modalBodyContent">
+          
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" style="background-color: #FEA116; color: white;border: none;" id="doneButton">Done</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+{% endblock %}
