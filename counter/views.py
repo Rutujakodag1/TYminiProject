@@ -14,65 +14,32 @@ from django.shortcuts import get_object_or_404, redirect
 from table.models import orders
 logger = logging.getLogger(__name__)
 from table.models import SubmittedItem
+from collections import defaultdict
+
+from django.db.models import Sum
+from kitchen.views import kitchen_home
 def counter_home(request):
-    # table_numbers=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
-    # context={'table_numbers':table_numbers}
-
-    # order= SubmittedItem.objects.all()
-    # # print(order)
-    # context = {'orders': order}
-    # return render(request,'counter/counter_home.html',context)
-
-
-    # return render(request, 'counter/counter_home.html', {
-    #     'tables_with_orders': tables_with_orders
-    # })
-
-
-
-
     confirmed_orders = SubmittedItem.objects.filter(status='confirmed').order_by('tableNumber')
 
-    # Organize confirmed orders by tableNumber
-    tables_with_confirmed_orders = {}
-    
+    # Group orders by table number and calculate totals
+    orders_by_table = {}
+    table_totals = {}
+
     for order in confirmed_orders:
         table_number = order.tableNumber
-        if table_number not in tables_with_confirmed_orders:
-            tables_with_confirmed_orders[table_number] = []
-        tables_with_confirmed_orders[table_number].append(order)
-
-    # Pass the combined dictionary to the template
-    return render(request, 'counter/counter_home.html', {
-        'tables_with_confirmed_orders': tables_with_confirmed_orders
-    })
-
-
-
-def confirm_order(request, table_number):
-    if request.method == 'POST':
-        # Fetch all pending orders for the specified table
-        pending_orders = SubmittedItem.objects.filter(tableNumber=table_number, status='pending')
-
-        # Update the status of each order to 'confirmed'
-        pending_orders.update(status='confirmed')
+        if table_number not in orders_by_table:
+            orders_by_table[table_number] = []
+            table_totals[table_number] = 0
         
-        # Redirect back to the kitchen home after confirmation
-        return redirect('counter_home')
+        orders_by_table[table_number].append(order)
+        table_totals[table_number] += order.total_price
 
-def confirm_all_orders(request, table_number):
-    if request.method == 'POST':
-        # Get all pending orders for the specified table
-        all_orders = orders.objects.filter(tableNumber=table_number, status='pending')
-        
-        # Update status for all pending orders
-        for order in all_orders:
-            order.status = 'confirmed'
-            order.save()
-        
-        # Redirect or render a success message
-        return redirect('counter_home')  # Redirect to the kitchen home page
+    context = {
+        'confirmed_orders': orders_by_table,
+        'table_totals': table_totals,
+    }
 
+    return render(request, 'counter/counter_home.html', context)
 
 
 def login_view(request):
@@ -103,7 +70,7 @@ def menu(request):
 
 def tableList1(request):
     tab=request.GET.get('tab','recent')
-    table_numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,13,14,15]  # Example: Replace with your logic to get table numbers
+    table_numbers =range(1,16)  # Example: Replace with your logic to get table numbers
     if tab == 'all':
         template_name = 'counter/tableList.html'
         context = {'table_numbers': table_numbers}
@@ -154,3 +121,45 @@ def get_table_receipt(request, table_number):
     })
 
     return JsonResponse(data)
+
+
+
+
+from .models import SubmittedItem
+
+def generate_bill(request, table_number):
+    # Get all confirmed items for the specific table
+    confirmed_items = SubmittedItem.objects.filter(tableNumber=table_number, status='confirmed')
+
+    # Calculate total bill amount
+    total_bill = sum(item.total_price for item in confirmed_items)
+
+    # Pass the items and total to the template for display
+    context = {
+        'confirmed_items': confirmed_items,
+        'total_bill': total_bill,
+        'table_number': table_number,
+    }
+    return render(request, 'counter/counter_home.html', context)
+
+
+from django.shortcuts import render
+from .models import SubmittedItem
+
+def recent_tables_view(request):
+    # Get the recent submitted items (bills) sorted by creation time
+    recent_tables = SubmittedItem.objects.filter(status='confirmed').order_by('-created_at')[:10]  # Get the last 10 confirmed orders
+
+    context = {
+        'recent_tables': recent_tables,
+    }
+    return render(request, 'counter/counter_home.html', context)
+def generate_bill_view(request, table_number):
+    # Fetch the submitted items for the specific table number
+    submitted_items = SubmittedItem.objects.filter(tableNumber=table_number, status='confirmed')
+    
+    context = {
+        'submitted_items': submitted_items,
+        'table_number': table_number,
+    }
+    return render(request, 'counter/bill_view.html', context)

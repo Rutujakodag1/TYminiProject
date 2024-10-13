@@ -20,8 +20,7 @@
 
 
 
-
-<div class="tab-content" style="margin-left: 50px;">
+<div class="tab-content" style="margin-left: 50px;margin-right:50px;">
     <div class="tab-pane fade show active">
         <div class="row g-4">
             {% for item in not_submitted_items %}
@@ -99,12 +98,17 @@
     </div>
 </div>
 
-
+<div class="total-bill">
+    <h3>Total Bill: ${{ total_bill }}</h3>
+</div>
 
  <form action="{% url 'submit_order' %}" method="POST">
     {% csrf_token %}
-    <button type="submit" class="btn btn-success" style="margin-top: 20px; margin-left:1150px; margin-bottom:50px; border-color: #31abf2; background-color: #31abf2;">Submit Order</button>
-</form>
+    <button type="submit" class="btn btn-success" style="margin-top: 20px; border-color: #31abf2; background-color: #31abf2; position: absolute; right: 50px;">
+        Submit Order
+    </button>
+    
+    </form>
 
 <script>
 
@@ -159,9 +163,10 @@ function FinalOrder(itemId, itemName, itemPrice) {
 
 
 
- <h3 style="margin-top: 10px; background-color: #92ee50; color: white; padding: 8px 15px; font-size: 24px; margin-bottom: 15px; border-radius: 5px; line-height: 1.4;margin-right:10px; margin-left:10px;margin-bottom:40px">
+<h3 style="margin-top: 80px; background-color: #92ee50; color: white; padding: 8px 15px; font-size: 24px; border-radius: 5px; line-height: 1.4; margin-right: 10px; margin-left: 10px; margin-bottom: 20px;">
     Submitted
 </h3>
+
 
 
 

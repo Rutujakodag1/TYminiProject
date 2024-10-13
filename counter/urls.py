@@ -25,6 +25,10 @@ urlpatterns = [
     path('',views.login_view,name='login_view'),
     path('logout/',views.logout_view,name='logout_view'),
 
+    # path('bill/<int:table_number>/', views.get_bill, name='get_bill'),
+
+    path('recent_tables/', views.recent_tables_view, name='recent_tables'),  # No parameters
+    path('generate_bill/<int:table_number>/', views.generate_bill, name='generate_bill'),
 
 
     path('menu/',views.menu,name='menu'),
@@ -32,6 +36,4 @@ urlpatterns = [
     # path('tableList/',views.table_view,name='table_view'),
     path('api/get_table_receipt/<int:table_number>/', views.get_table_receipt, name='get_table_receipt'),
     path('orders/', views.counter_home, name='view_orders'),
-    path('confirm-order/<int:table_number>/', views.confirm_order, name='confirm_order'),
-    path('confirm_all_orders/<int:table_number>/', views.confirm_all_orders, name='confirm_all_orders'),
 ]

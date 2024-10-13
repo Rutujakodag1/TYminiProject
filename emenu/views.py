@@ -26,10 +26,10 @@ def table_home(request, id=None):
 
     if request.method == 'POST':
         # Get the table number from the submitted form data
-        table_number = request.POST.get('tableNumber')
+        table_number = request.POST.get('table_number')
         
         # Store the table number in the user's session
-        request.session['tableNumber'] = table_number  # This allows you to access it later
+        request.session['table_number'] = table_number  # This allows you to access it later
 
         # Save the submitted item in the database
         SubmittedItem.objects.create(tableNumber=table_number, )  # Save other necessary fields

@@ -25,6 +25,7 @@ urlpatterns = [
     path('orders/', views.kitchen_home, name='view_orders'),
     path('confirm-order/<int:table_number>/', views.confirm_order, name='confirm_order'),
     path('confirm_all_orders/<int:table_number>/', views.confirm_all_orders, name='confirm_all_orders'),
+    path('delete_order/<int:order_id>/', views.delete_order, name='delete_order')
 
 
 ]

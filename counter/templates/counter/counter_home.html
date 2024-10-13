@@ -1,244 +1,60 @@
 {% extends "counter/base.html" %}
 {% load static %}
 {% block start %}
-    <div class="container-xxl bg-white p-0">
-        <!-- Spinner Start -->
-        <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
-            <div class="spinner-border " style="width: 3rem; height: 3rem;color:#FEA116" role="status">
-                <span class="sr-only">Loading...</span>
-            </div>
-        </div>
-        <!-- Spinner End -->
-
-
-
-        <!-- Menu Start -->
-        <div class="container-xxl py-5">
-            <div class="container">
-                <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
-                    <h5 class="section-title ff-secondary text-center fw-normal mb-5" style="color: #FEA116;">Orders</h5>
-                    {% comment %} <h1 class="mb-5">Most Popular Items</h1> {% endcomment %}
-                    <div class="tab-class text-center wow fadeInUp" data-wow-delay="0.1s">
-                        <div class="tab-content">
-                            <div id="tab-1" class="tab-pane fade show p-0 active">
-                                <div class="row g-4">
-{% comment %}                     
-                                    <!-- Table 1 Order Card -->
-                                    <div class="col-lg-6">
-                                        <div class="card border-0 shadow-lg rounded-lg h-100">
-                                            <div class="card-body">
-                                                <!-- Centered Table Number -->
-                                                <div class="d-flex justify-content-center align-items-center mb-4" style="height: 100px;">
-                                                    <div class="table-number-box d-flex justify-content-center align-items-center rounded-circle"
-                                                         style="width: 70px; height: 70px; background-color: #FEA116; color: white; font-size: 24px;">
-                                                        1
-                                                    </div>
-                                                </div>
-                    
-                                               
-                                                <!-- Orders List -->
-                                                <div class="order-info w-100 mt-3">
-                                                    <div class="d-flex justify-content-between border-bottom pb-2">
-                                                        <span>Chicken Burger</span>
-                                                        <span>Qty: 2</span>
-                                                        <span>$10.00</span>
-                                                    </div>
-                                                    <div class="d-flex justify-content-between border-bottom pb-2">
-                                                        <span>Fries</span>
-                                                        <span>Qty: 1</span>
-                                                        <span>$3.00</span>
-                                                    </div>
-                                                    <div class="d-flex justify-content-between border-bottom pb-2">
-                                                        <span>Coke</span>
-                                                        <span>Qty: 3</span>
-                                                        <span>$6.00</span>
-                                                    </div>
-                                                </div>
-                    
-                                                <!-- Total Bill -->
-                                                <div class="d-flex justify-content-between mt-3">
-                                                    <strong>Total Bill:</strong>
-                                                    <strong>$25.00</strong>
-                                                </div>
-                    
-                                                <!-- Single Done Button -->
-                                                <div class="text-center mt-3">
-                                                    <button class="btn btn-success btn-lg rounded-pill">Done</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div> {% endcomment %}
-{% comment %}                     
-                                    <!-- Table 2 Order Card -->
-                                    <div class="col-lg-6">
-                                        <div class="card border-0 shadow-lg rounded-lg h-100">
-                                            <div class="card-body">
-                                                <!-- Centered Table Number -->
-                                                <div class="d-flex justify-content-center align-items-center mb-4" style="height: 100px;">
-                                                    <div class="table-number-box d-flex justify-content-center align-items-center rounded-circle"
-                                                         style="width: 70px; height: 70px; background-color: #FEA116; color: white; font-size: 24px;">
-                                                        2
-                                                    </div>
-                                                </div>
-                    
-                                                <!-- Orders List -->
-                                                <div class="order-info w-100 mt-3">
-                                                    <div class="d-flex justify-content-between border-bottom pb-2">
-                                                        <span>Spaghetti Carbonara</span>
-                                                        <span>Qty: 1</span>
-                                                        <span>$12.00</span>
-                                                    </div>
-                                                    <div class="d-flex justify-content-between border-bottom pb-2">
-                                                        <span>Garlic Bread</span>
-                                                        <span>Qty: 2</span>
-                                                        <span>$6.00</span>
-                                                    </div>
-                                                    <div class="d-flex justify-content-between border-bottom pb-2">
-                                                        <span>Mineral Water</span>
-                                                        <span>Qty: 2</span>
-                                                        <span>$2.00</span>
-                                                    </div>
-                                                </div>
-                    
-                                                <!-- Total Bill -->
-                                                <div class="d-flex justify-content-between mt-3">
-                                                    <strong>Total Bill:</strong>
-                                                    <strong>$30.00</strong>
-                                                </div>
-                    
-                                                <!-- Single Done Button -->
-                                                <div class="text-center mt-3">
-                                                    <button class="btn btn-success btn-lg rounded-pill">Done</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div> {% endcomment %}
-                    <!-- Pending Orders for the table -->
-{% comment %} <h6 style="margin-top: 10px; background-color: #fe4c16; color: black; font-weight: 500; padding: 8px 15px; font-size: 24px; margin-bottom: 10px; border-radius: 25px; line-height: 0.5; text-align: left;">
-    Pending Orders
-</h6>
-<div class="order-info w-100 mt-3">
-    <form method="post" action="{% url 'confirm_order' table_number %}">
-        {% csrf_token %}
-        <table id="pending-orders-{{ table_number }}" class="display">
-            <thead>
-                <tr>
-                    <th>Item Name</th>
-                    <th>Quantity</th>
-                    <th>Price</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for order in orders.pending %}
-                <tr>
-                    <td>{{ order.name }}</td>
-                    <td style="text-align: center;">{{ order.quantity }}</td>
-                    <td style="text-align: center;">{{ order.total_price }}</td>
-                    <td style="text-align: center;">
-                        <form method="post" style="display:inline;">
-                            {% csrf_token %}
-                            <input type="hidden" name="delete_order_id" value="{{ order.id }}">
-                            <button type="submit" style="background-color: transparent; border: none; color: red; cursor: pointer;">
-                                <i class="fa-solid fa-xmark"></i>
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="4">No pending orders for this table.</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        {% if orders.pending %}
-        <button type="submit" class="done-btn" style="background-color: #fe4c16; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-top: 10px;">
-            Done
-        </button>
-        {% endif %}
-    </form>
-</div> {% endcomment %}
-
-                    <!-- Confirmed Orders for the table -->
-                    {% comment %} <h6 style="margin-top: 10px; background-color: #fea116; color: black; padding: 8px 8px; font-size: 24px; margin-bottom: 10px; border-radius: 15px; line-height: 0.5; text-align: left;">
-                        Confirmed Orders
-                    </h6>
-                    <div class="billing-info w-100 mt-3">
-                        <table id="confirmed-orders-{{ table_number }}" class="display">
-                            <thead>
-                                <tr>
-                                    <th>Item Name</th>
-                                    <th>Quantity</th>
-                                    <th>Price</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for order in orders.confirmed %}
-                                <tr>
-                                    <td>{{ order.name }}</td>
-                                    <td style="text-align: center;">{{ order.quantity }}</td>
-                                    <td style="text-align: center;">{{ order.total_price }}</td>
-                                </tr>
-                               
-                                {% endfor %}
-                                
-                            </tbody>
-                        </table>{% endcomment %}
-
-
-                        {% for table_number, confirmed_orders in tables_with_confirmed_orders.items %}
-        <div class="col-lg-6 mb-4">
-            <div class="card border-0 shadow-lg rounded-lg h-100">
-                <div class="card-body">
-                    <div class="d-flex justify-content-center align-items-center mb-3">
-                        <span class="badge" style="background-color: #221f1c; color: white; padding: 10px 30px; border-radius: 25px; font-size: 28px;">
-                            Table: {{ table_number }}
-                        </span>
-                    </div>
-
-                    <!-- Confirmed Orders for the table -->
-                    <h6 style="margin-top: 10px; background-color: #fea116; color: black; padding: 8px 8px; font-size: 24px; margin-bottom: 10px; border-radius: 15px; line-height: 0.5; text-align: left;">
-                        Confirmed Orders
-                    </h6>
-                    <div class="billing-info w-100 mt-3">
-                        <table id="confirmed-orders-{{ table_number }}" class="display">
-                            <thead>
-                                <tr>
-                                    <th>Item Name</th>
-                                    <th>Quantity</th>
-                                    <th>Price</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for order in confirmed_orders %}
-                                <tr>
-                                    <td>{{ order.name }}</td>
-                                    <td style="text-align: center;">{{ order.quantity }}</td>
-                                    <td style="text-align: center;">{{ order.total_price }}</td>
-                                </tr>
-                                {% empty %}
-                                <tr>
-                                    <td colspan="3">No confirmed orders for this table.</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                    
-                </div>
-            </div>
-        </div>
-        {% endfor %}
-                    </div> 
+<div class="container">
+    <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+        <h5 class="section-title ff-secondary text-center fw-normal mb-5" style="color: #FEA116; font-size: 30px;">
+            Orders by Table
+        </h5>
+        <div class="tab-class text-center wow fadeInUp" data-wow-delay="0.1s">
+            <div class="tab-content">
+                <div id="tab-1" class="tab-pane fade show p-0 active">
+                    <div class="row g-4">
+                        <!-- Loop over grouped orders by table number -->
+                        {% for table_number, orders in confirmed_orders.items %}
+                        <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                            <div class="order-item bg-light rounded p-4">
+                                <div class="d-flex align-items-center mb-3">
+                                    <h4 class="mb-0" style="color: #FEA116;">Table Number: {{ table_number }}</h4>
+                                </div>
+                                <div class="billing-info w-100 mt-3">
+                                    <table class="table table-bordered text-center" style="font-size: 16px;">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Item Name</th>
+                                                <th>Quantity</th>
+                                                <th>Price</th>
+                                                <th>Total Price</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for order in orders %}
+                                            <tr>
+                                                <td>{{ order.name }}</td>
+                                                <td>{{ order.quantity }}</td>
+                                                <td>${{ order.price }}</td>
+                                                <td>${{ order.total_price }}</td>
+                                            </tr>
+                                            {% empty %}
+                                            <tr>
+                                                <td colspan="4">No confirmed orders for this table.</td>
+                                            </tr>
+                                            {% endfor %}
+                                            <!-- Total Bill Row -->
+                                            <tr class="table-info">
+                                                <td colspan="3"><strong>Total Bill</strong></td>
+                                                <td><strong>${{ table_totals.table_number }}</strong></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
+                        {% endfor %}
                     </div>
-                                      
-
+                </div>
             </div>
         </div>
-        <!-- Menu End -->
-        
-        {% endblock start %}
+    </div>
+</div>
+{% endblock start %}

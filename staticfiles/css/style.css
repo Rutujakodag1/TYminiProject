@@ -80,8 +80,17 @@
     border-radius: 2px;
 }
 
-
 /*** Navbar ***/
+.navbar-dark {
+    position: fixed; /* Make the navbar stay at the top */
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    background: var(--dark) !important; /* Constant background color */
+    transition: none; /* Remove any transition effect */
+}
+
 .navbar-dark .navbar-nav .nav-link {
     position: relative;
     margin-left: 25px;
@@ -112,14 +121,11 @@
     max-height: 45px;
 }
 
+/* For mobile and smaller screens */
 @media (max-width: 991.98px) {
-    .sticky-top.navbar-dark {
-        position: relative;
-    }
-
     .navbar-dark .navbar-collapse {
         margin-top: 15px;
-        border-top: 1px solid rgba(255, 255, 255, .1)
+        border-top: 1px solid rgba(255, 255, 255, .1);
     }
 
     .navbar-dark .navbar-nav .nav-link,
@@ -133,23 +139,17 @@
     }
 }
 
+/* For larger screens */
 @media (min-width: 992px) {
     .navbar-dark {
-        position: absolute;
+        position: fixed;
         width: 100%;
         top: 0;
         left: 0;
         z-index: 999;
-        background: transparent !important;
-    }
-    
-    .sticky-top.navbar-dark {
-        position: fixed;
-        background: var(--dark) !important;
+        background: var(--dark) !important; /* Constant background color */
     }
 }
-
-
 /*** Hero Header ***/
 .hero-header {
     background: linear-gradient(rgba(15, 23, 43, .9), rgba(15, 23, 43, .9)), url(../img/bg-hero.jpg);
@@ -492,3 +492,8 @@
     border-radius: 50%; /* Ensure the box is round */
     margin: 10px; /* Adjust margin as needed */
 }
+.tables-container {
+    margin-top: 20px; /* Adjust as needed */
+}
+
+

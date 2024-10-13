@@ -123,9 +123,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     tableModal.addEventListener('show.bs.modal', function (event) {
         var button = event.relatedTarget; // Button that triggered the modal
-        var tableNumber = button.getAttribute('data-table-number'); // Extract info from data-* attributes
+        var table_number = button.getAttribute('data-table-number'); // Extract info from data-* attributes
         
-        fetch(`/counter/api/get_table_receipt/${tableNumber}/`)
+        fetch(`/counter/api/get_table_receipt/${table_number}/`)
             // .then(response => response.json())
             .then(response => {
                 console.log('Response status:', response.status); // Log status
@@ -148,7 +148,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         </div>
                         <div class="customer-info">
                             
-                            <p><strong>Table No:</strong> ${tableNumber}</p>
+                            <p><strong>Table No:</strong> ${table_number}</p>
                             <p><strong>Date:</strong> ${currentDate}</p>
                         </div>
                         <table class="order-table">

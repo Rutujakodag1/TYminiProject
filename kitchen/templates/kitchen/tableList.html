@@ -3,7 +3,11 @@
 {% block table %}
 <div class="content-wrapper">
     <div class="container">
-        <h2 class="text-center" style="color:#feaf39; margin-top: 20px !important;">All Tables</h2>
+        {% comment %} <h2 class="text-center" style="color:#feaf39; margin-top: 105px !important;">All Tables</h2> {% endcomment %}
+        <h5 class="section-title ff-secondary text-center fw-normal  mb-2 " style="color: #FEA116; font-size: 30px;">All Tables</h5>
+
+        {% comment %} <h5 class="section-title text-center mt-2 mb-2" style="color: #FEA116; font-weight: bold;">Confirmed Orders</h5> {% endcomment %}
+
         <div class="tables-container">
             <div class="d-flex flex-wrap">
                 {% for table_number in table_numbers %}
@@ -108,14 +112,14 @@
 
         orderModal.addEventListener('show.bs.modal', function (event) {
             var button = event.relatedTarget; // Button that triggered the modal
-            var tableNumber = button.getAttribute('data-table-number'); // Extract info from data-* attributes
+            var table_number = button.getAttribute('data-table-number'); // Extract info from data-* attributes
             
             // Fetch static order data
-            var orderData = ordersData[tableNumber];
+            var orderData = ordersData[table_number];
             if (orderData) {
                 var orderDetailsHTML = `
                     <div class="customer-info">
-                        <p><strong>Table No:</strong> ${tableNumber}</p>
+                        <p><strong>Table No:</strong> ${table_number}</p>
                     </div>
                     <table class="order-table">
                         <thead>

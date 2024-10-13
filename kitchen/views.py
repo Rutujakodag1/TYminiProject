@@ -12,15 +12,15 @@ from table.models import orders
 
 
 # def kitchen_home(request):
-#     pending_orders = SubmittedItem.objects.filter(status='pending').order_by('tableNumber')
+#     pending_orders = SubmittedItem.objects.filter(status='pending').order_by('table_number')
 #     tables_with_orders = {}
     
 #     for order in pending_orders:
-#         table_number = order.tableNumber
+#         table_number = order.table_number
 #         if table_number not in tables_with_orders:
 #             tables_with_orders[table_number] = []
 #         tables_with_orders[table_number].append(order)
-#     confirmed_orders = orders.objects.filter(status='confirmed').order_by('tableNumber')
+#     confirmed_orders = orders.objects.filter(status='confirmed').order_by('table_number')
 
 #     return render(request, 'kitchen/kitchen_home.html', {'tables_with_orders': tables_with_orders,'confirmed_orders': confirmed_orders})
 
@@ -53,13 +53,13 @@ from table.models import orders
 
 # def kitchen_home(request):
 #     # Fetch pending and confirmed orders
-#     pending_orders = SubmittedItem.objects.filter(status='pending').order_by('tableNumber')
-#     confirmed_orders = SubmittedItem.objects.filter(status='confirmed').order_by('tableNumber')
+#     pending_orders = SubmittedItem.objects.filter(status='pending').order_by('table_number')
+#     confirmed_orders = SubmittedItem.objects.filter(status='confirmed').order_by('table_number')
     
-#     # Organize pending orders by tableNumber
+#     # Organize pending orders by table_number
 #     tables_with_orders = {}
 #     for order in pending_orders:
-#         table_number = order.tableNumber
+#         table_number = order.table_number
 #         if table_number not in tables_with_orders:
 #             tables_with_orders[table_number] = []
 #         tables_with_orders[table_number].append(order)
@@ -77,28 +77,28 @@ def kitchen_home(request):
 
 
 
-    if request.method == 'POST':
-        # Check if the form is for deleting an order
-        delete_order_id = request.POST.get('delete_order_id')
-        if delete_order_id:
-            order = get_object_or_404(SubmittedItem, id=delete_order_id)
-            order.delete()
+    # if request.method == 'POST':
+    #     # Check if the form is for deleting an order
+    #     delete_order_id = request.POST.get('delete_order_id')
+    #     if delete_order_id:
+    #         order = get_object_or_404(SubmittedItem, id=delete_order_id)
+    #         order.delete()
     # Fetch pending and confirmed orders
 
     pending_orders = SubmittedItem.objects.filter(status='pending').order_by('tableNumber')
     confirmed_orders = SubmittedItem.objects.filter(status='confirmed').order_by('tableNumber')
     
-    # Organize both pending and confirmed orders by tableNumber
+    # Organize both pending and confirmed orders by table_number
     tables_with_orders = {}
     
-    # Organize pending orders by tableNumber
+    # Organize pending orders by table_number
     for order in pending_orders:
         table_number = order.tableNumber
         if table_number not in tables_with_orders:
             tables_with_orders[table_number] = {'pending': [], 'confirmed': []}
         tables_with_orders[table_number]['pending'].append(order)
 
-    # Organize confirmed orders by tableNumber
+    # Organize confirmed orders by table_number
     for order in confirmed_orders:
         table_number = order.tableNumber
         if table_number not in tables_with_orders:
@@ -123,7 +123,7 @@ def kitchen_home(request):
 
 # def confirm_order(request, table_number):
 #     # Fetch pending orders for the specified table
-#     pending_orders = orders.objects.filter(tableNumber=table_number, status='pending')
+#     pending_orders = orders.objects.filter(table_number=table_number, status='pending')
     
 #     # Update the status of each order to 'confirmed'
 #     pending_orders.update(status='confirmed')
@@ -164,13 +164,13 @@ def confirm_all_orders(request, table_number):
 #     submitted_items = SubmittedItem.objects.all()
     
 #     if submitted_items.exists():
-#         tableNumber = submitted_items.first().tableNumber  # Get the first table number
+#         table_number = submitted_items.first().table_number  # Get the first table number
 #     else:
-#         tableNumber = None  # Handle the case where no orders exist
+#         table_number = None  # Handle the case where no orders exist
 
 #     context = {
 #         'orders': submitted_items,
-#         'tableNumber': tableNumber,
+#         'table_number': table_number,
 #     }
 
 #     return render(request, 'kitchen/kitchen_home.html', context)
@@ -239,3 +239,9 @@ def get_table_receipt(request, table_number):
 #         return redirect('view_orders')  # Redirect back to the orders page
 #     except orders.DoesNotExist:
 #         return JsonResponse({'error': 'Order not found'}, status=404)
+
+
+def delete_order(request, order_id):
+    order = get_object_or_404(SubmittedItem, id=order_id)
+    order.delete()
+    return redirect('kitchen_home')  # Replace 'pending_orders' with your actual view name

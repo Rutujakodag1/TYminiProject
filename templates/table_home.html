@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Restoran sid template- Bootstrap Restaurant Template</title>
+    <title>E-Menu - A digital ordering system </title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
@@ -78,7 +78,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-2 px-lg-5 py-3 py-lg-0">
         <a href="" class="navbar-brand p-0" style="margin-bottom: 0px; padding-bottom: 0;">
             <h1 class="text-primary m-1" style="color: #FEA116 !important; text-decoration: none !important;">
-                <i class="fa fa-utensils me-3" style="margin-left: 30px; margin-top: 0px; color: #FEA116 !important;"></i>Restoran sid
+                <i class="fa fa-utensils me-3" style="margin-left: 30px; margin-top: 0px; color: #FEA116 !important;"></i>E-Menu 
             </h1>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
@@ -93,7 +93,7 @@
                 <a href="{% url 'bill' %}" class="nav-item nav-link {% if request.path == '/bill/' %}active{% endif %}">Bill</a>
                 <a href="{% url 'order' %}" class="nav-item nav-link {% if request.path == '/order/' %}active{% endif %}">Order</a>
                 <div class="header">
-                    <div class="table-number-display" id="tableNumberDisplay">Table: N/A</div>  <!-- Placeholder text -->
+                    <div class="table-number-display" id="table_numberDisplay">Table: N/A</div>  <!-- Placeholder text -->
                 </div>
             </div>
          {% endcomment %}
@@ -104,7 +104,7 @@
                 <a href="{% url 'bill' %}" class="nav-item nav-link {% if request.path == '/bill/' %}active{% endif %}">Bill</a>
                 <a href="{% url 'order' %}" class="nav-item nav-link {% if request.path == '/order/' %}active{% endif %}">Order</a>
                 
-                <div class="table-number-display ms-auto" id="tableNumberDisplay">Table: </div> <!-- Table number aligned to the right -->
+                <div class="table-number-display ms-auto" id="table_numberDisplay">Table: </div> <!-- Table number aligned to the right -->
             </div>
         </div>
         
@@ -133,12 +133,12 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-center align-items-center mb-3">
                         <span class="badge" style="background-color: #221f1c; color: white; padding: 10px 30px; border-radius: 25px; font-size: 28px;">
-                            Table: {{ table.tableNumber }}
+                            Table: {{ table.table_number }}
                         </span>
                     </div>
                     <h6 style="background-color: #fe4c16; color: black; padding: 8px 15px; font-size: 24px; margin-bottom: 10px; border-radius: 15px;">Orders</h6>
                     <div class="order-info w-100 mt-3">
-                        <table id="table-{{ table.tableNumber }}" class="display">
+                        <table id="table-{{ table.table_number }}" class="display">
                             <thead>
                                 <tr>
                                     <th>Item Name</th>
@@ -215,22 +215,102 @@
 {% block content %}
 
 
-<div class="modal-overlay" id="modalOverlay" style="display: none;"></div>
+{% comment %} <div class="modal-overlay" id="modalOverlay" style="display: none;"></div>
 <div class="popup" style="display: none;">
     <h2>Welcome to Our Restaurant!</h2>
     <p>Please enter your table number:</p>
-    <input type="number" id="tableNumber" placeholder="Table Number" required>
-    <button onclick="enterTableNumber()">Enter</button>
+    <input type="number" id="table_number" placeholder="Table Number" required>
+    <button onclick="entertable_number()">Enter</button>
+</div> {% endcomment %}
+
+
+<div class="modal-overlay" id="modalOverlay" style="display: none;"></div>
+<div class="popup" id="popup" style="display: none;">
+    <div class="text-center">
+        <h2>Welcome to Our Restaurant!</h2>
+        {% comment %} <input type="number" id="table_number" placeholder="Table Number" min="1" max="15" required> {% endcomment %}
+        <input type="number" id="table_number" placeholder="Enter Your Table Number" min="1" max="15" oninput="validity.valid||(value='');" required>
+
+
+        <button onclick="entertable_number()">Enter</button>
+        <!-- Error message will be appended here by JavaScript -->
+    </div>
 </div>
 
+<style>
+    /* Modal Overlay Styles */
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        z-index: 999;
+    }
 
+    /* Popup Box Styles */
+    .popup {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 90%;
+        max-width: 400px;
+        background-color: #ffffff;
+        padding: 30px;
+        border-radius: 20px;
+        box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.3);
+        z-index: 1000;
+        text-align: center;
+    }
+
+    .popup h2 {
+        font-family: 'Cursive', sans-serif;
+        font-size: 26px;
+        color: #FEA116;
+        margin-bottom: 20px;
+    }
+
+    .popup p {
+        font-size: 18px;
+        color: #6c757d;
+    }
+
+    .popup input[type="number"] {
+        width: 80%;
+        padding: 10px;
+        margin: 15px 0;
+        border-radius: 10px;
+        border: 1px solid #ccc;
+        text-align: center;
+        font-size: 18px;
+    }
+
+    .popup button {
+        background-color: #FEA116;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 18px;
+        font-weight: bold;
+        box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+        transition: background-color 0.3s;
+    }
+
+    .popup button:hover {
+        background-color: #e04314;
+    }
+</style>
 
 <!-- Finish Button to delete the item and table number to dstart new session -->
 
 
-<form action="{% url 'cancel_item_finish' %}" method="POST" style="margin-left: 5px;">
+<form action="{% url 'cancel_item_finish' %}" method="POST" style="margin-left: 5px;" onsubmit="return finishSession();">
     {% csrf_token %}
-    <button onclick="finishSession()" type="submit">Finish</button>
+    <button type="submit">Finish</button>
 </form>
 
 {% if table_number %}
@@ -242,9 +322,9 @@
 <!-- Include this in every page -->
 <script>
     window.onload = function() {
-        let tableNumber = localStorage.getItem('tableNumber');
-        if (tableNumber) {
-            document.querySelector('.table-number-display').innerText = "Table: " + tableNumber;
+        let table_number = localStorage.getItem('table_number');
+        if (table_number) {
+            document.querySelector('.table-number-display').innerText = "Table: " + table_number;
         }
     }
 </script>
@@ -277,38 +357,40 @@
 <script>
 
     window.onload = function() {
-        let tableNumber = localStorage.getItem('tableNumber');
-        if (!tableNumber) {
+        let table_number = localStorage.getItem('table_number');
+        if (!table_number) {
             document.querySelector("#modalOverlay").style.display = "block";
             document.querySelector(".popup").style.display = "block";
         } else {
-            document.querySelector('.table-number-display').innerText = "Table: " + tableNumber;
+            document.querySelector('.table-number-display').innerText = "Table: " + table_number;
         }
     }
     
-    {% comment %} function enterTableNumber() {
-        let tableNumber = document.getElementById('tableNumber').value;
-        if (tableNumber) {
+    {% comment %} function entertable_number() {
+        let table_number = document.getElementById('table_number').value;
+        if (table_number) {
             let currentDate = new Date();
-            let uniqueID = currentDate.toISOString().split('T')[0] + '-' + tableNumber + '-' + currentDate.toLocaleTimeString();
+            let uniqueID = currentDate.toISOString().split('T')[0] + '-' + table_number + '-' + currentDate.toLocaleTimeString();
     
-            localStorage.setItem('tableNumber', tableNumber);
+            localStorage.setItem('table_number', table_number);
             localStorage.setItem('uniqueID', uniqueID);
     
             document.querySelector("#modalOverlay").style.display = 'none';
             document.querySelector(".popup").style.display = 'none';
     
-            document.querySelector('.table-number-display').innerText = "Table: " + tableNumber;
+            document.querySelector('.table-number-display').innerText = "Table: " + table_number;
         }
     } {% endcomment %}
+    function entertable_number() {
+        let table_number = document.getElementById('table_number').value;
+        let errorMessage = document.getElementById('errorMessage');
     
-    function enterTableNumber() {
-        let tableNumber = document.getElementById('tableNumber').value;
-        if (tableNumber) {
+        // Check if the entered table number is valid (positive integer between 1 and 15)
+        if (Number.isInteger(+table_number) && table_number >= 1 && table_number <= 15) {
             let currentDate = new Date();
-            let uniqueID = currentDate.toISOString().split('T')[0] + '-' + tableNumber + '-' + currentDate.toLocaleTimeString();
+            let uniqueID = currentDate.toISOString().split('T')[0] + '-' + table_number + '-' + currentDate.toLocaleTimeString();
     
-            localStorage.setItem('tableNumber', tableNumber);
+            localStorage.setItem('table_number', table_number);
             localStorage.setItem('uniqueID', uniqueID);
     
             // Send table number to server to set in session
@@ -318,15 +400,29 @@
                     "Content-Type": "application/json",
                     "X-CSRFToken": getCookie('csrftoken'),  // Ensure CSRF token is included
                 },
-                body: JSON.stringify({ table_number: tableNumber }),
+                body: JSON.stringify({ table_number: table_number }),
             })
             .then(response => {
                 if (response.ok) {
                     document.querySelector("#modalOverlay").style.display = 'none';
                     document.querySelector(".popup").style.display = 'none';
-                    document.querySelector('.table-number-display').innerText = "Table: " + tableNumber;
+                    document.querySelector('.table-number-display').innerText = "Table: " + table_number;
+                    if (errorMessage) {
+                        errorMessage.style.display = 'none';  // Hide error message if it was displayed
+                    }
                 }
             });
+        } else {
+            // Show an error message if the table number is invalid
+            if (!errorMessage) {
+                errorMessage = document.createElement('p');
+                errorMessage.id = 'errorMessage';
+                errorMessage.style.color = 'red';
+                errorMessage.innerText = 'Invalid table number. Please enter a number between 1 and 15.';
+                document.querySelector('.popup .text-center').appendChild(errorMessage);
+            } else {
+                errorMessage.style.display = 'block';  // Show existing error message
+            }
         }
     }
     
@@ -347,11 +443,11 @@
     }
     
 
-
+{% comment %} 
 
      function finishSession() {
         if (confirm("Are you sure you want to finish?")) {
-            localStorage.removeItem('tableNumber');
+            localStorage.removeItem('table_number');
             localStorage.removeItem('uniqueID');
         
             document.querySelector('.table-number-display').innerText = "";
@@ -367,8 +463,28 @@
         return false; // Prevent form submission if user cancels
     }
 
+     {% endcomment %}
+     function finishSession() {
+        // Ask for confirmation
+        if (confirm("Are you sure you want to finish?")) {
+            // Clear local storage
+            localStorage.removeItem('table_number');
+            localStorage.removeItem('uniqueID');
+        
+            // Reset the table number display
+            document.querySelector('.table-number-display').innerText = "";
+            alert('Thank you for visiting!');
+            
+            // Show the popup again for entering the table number
+            document.querySelector("#modalOverlay").style.display = "block";
+            document.querySelector(".popup").style.display = "block";
     
-    
+            // Allow form submission
+            return true;
+        }
+        // Prevent form submission if the user cancels
+        return false;
+    }
 </script>
 
 <style>
@@ -395,6 +511,11 @@
         z-index: 1000;
         pointer-events: all;
     }
+    .nav-item a:hover {
+        background-color: rgba(254, 161, 22, 0.1); /* light orange background */
+        transform: scale(1.05); /* slightly increases the size */
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); /* adds shadow for depth */
+    }
     
 
 </style>
@@ -405,14 +526,18 @@
     <ul class="nav nav-pills d-inline-flex justify-content-center border-bottom mb-5">
         {% for category in categories %}
             <li class="nav-item">
-                <a class="d-flex align-items-center text-start mx-3 ms-0 pb-3 {% if category == selected_category %}active{% endif %}" href="{% url 'table_home' category.id %}" style="color: #FEA116;text-decoration:none;">
+                <a class="d-flex align-items-center text-start mx-3 ms-0 pb-3 {% if category == selected_category %}active{% endif %}" 
+                   href="{% url 'table_home' category.id %}" 
+                   style="color: #FEA116; text-decoration: none; border-radius: 10px; padding: 10px 20px; transition: all 0.1s ease-in-out;">
                     
-                    <img src="{{ category.image.url }}" alt="{{ category.name }}" class="img-fluid" style="width: 50px; height: 50px;">
-                    
-                    <div class="ps-2    ">
-                        <small class="text-body" style="text-decoration: none;font-size:20px;">Popular</small>
-
-                        <h6 class="mt-n1 mb-0" style="color: #FEA116;font-size:20px;">{{ category.name }}</h6>
+                    <div class="d-flex align-items-center">
+                        <img src="{{ category.image.url }}" alt="{{ category.name }}" class="img-fluid rounded-circle" 
+                             style="width: 60px; height: 60px; border: 2px solid #FEA116; object-fit: cover; margin-right: 15px;">
+                        
+                        <div>
+                            <small class="text-body d-block" style="font-size: 18px; color: #666;">Popular</small>
+                            <h6 class="mb-0" style="color: #FEA116; font-size: 22px; font-weight: 600;">{{ category.name }}</h6>
+                        </div>
                     </div>
                 </a>
             </li>
@@ -420,25 +545,27 @@
     </ul>
 </div>
 
-
 <div class="tab-content" style="margin-left: 50px; margin-right:50px;">
     <div class="tab-pane fade show active">
         <div class="row g-4">
             {% for item in food_items %}
-                <div class="col-lg-6">
-                    <div class="d-flex align-items-center">
-                        <img class="flex-shrink-0 img-fluid rounded" src="{{ item.image.url }}" alt="{{ item.name }}" style="width: 50px; height: 50px;">
-
+            <div class="col-lg-6 mb-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="d-flex align-items-center p-3">
+                        <!-- Enlarged Image with Rounded Corners and a Shadow -->
+                        <img class="img-fluid rounded" src="{{ item.image.url }}" alt="{{ item.name }}" style="width: 150px; height: 150px; object-fit: cover; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);">
+            
                         <div class="w-100 d-flex flex-column text-start ps-4">
-                            <h5 class="d-flex justify-content-between border-bottom pb-2">
-                                <h5 style="color: #000000;font-size: 20px; ">{{ item.name }}</h5>
-                                <h5 class="" style="font-size: 14px; color: #FEA116;">${{ item.price }}</h5>
-                            </h5>
+                            <!-- Item Details with Stylish Fonts and Colors -->
+                            <h4 class="fw-bold" style="color: #333333; font-size: 26px;">{{ item.name }}</h4>
+                            <h5 class="fw-normal" style="font-size: 18px; color: #FEA116;">${{ item.price }}</h5>
+                            <!-- Button with Full Width and Appealing Color Scheme -->
+                            <button type="button" class="btn mt-3" data-bs-toggle="modal" data-bs-target="#selectModal-{{ item.id }}" style="background-color: #FEA116; color: white; border-radius: 8px; font-weight: bold;">Select</button>
                         </div>
-                        <!-- Button to trigger the modal -->
-                        <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#selectModal-{{ item.id }}" style="margin-left: 5px; background-color: #FEA116; color: white; border-color:#FEA116;">Select</button>
                     </div>
                 </div>
+            </div>
+                                             
 
 
 
@@ -473,7 +600,7 @@
 
                                 <!-- Done Button -->
                                 <a href="#" class="btn" style="background-color:#FEA116; border-color:#FEA116;" data-bs-dismiss="modal"
-                                onclick="addItemToOrder({{ item.id }}, '{{ item.name }}', {{ item.price }}, '{{ item.image.url }}',tableNumber)">Done</a>
+                                onclick="addItemToOrder({{ item.id }}, '{{ item.name }}', {{ item.price }}, '{{ item.image.url }}',table_number)">Done</a>
 
 
                                 <style>
@@ -513,7 +640,7 @@
 
                                     function addItemToOrder(itemId, itemName, itemPrice, itemImageUrl) {
                                         let quantity = document.getElementById('quantity-' + itemId).value;
-                                        let tableNumber = localStorage.getItem('tableNumber');
+                                        let table_number = localStorage.getItem('table_number');
                                         
                                         $.ajax({
                                             url: "{% url 'add_not_submitted_item'  %}",
@@ -524,7 +651,7 @@
                                                 'price': itemPrice,
                                                 'quantity': quantity,  // Send the quantity
                                                 'image_url': itemImageUrl,
-                                                'tableNumber': tableNumber ,
+                                                'table_number': table_number ,
                                                 'csrfmiddlewaretoken': '{{ csrf_token }}',
                                                 
                                             },

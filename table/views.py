@@ -34,7 +34,6 @@ def contact(request):
 
 def bill(request):
     return render(request ,'bill.html')
-    # return HttpResponse("in bill")
 
 def submit_order(request):
     not_submitted_items = NotSubmittedItem.objects.all()
@@ -54,10 +53,11 @@ def submit_order(request):
 
         )
         total_bill += total_price
-
+    table_number=request.session.get('table_number')
+    print(f"Table number from session: {table_number}")
     NotSubmittedItem.objects.all().delete()  # Clear NotSubmitted items
     # not_submitted_items = NotSubmittedItem.objects.all()  # Fetch all the selected items
-    submitted_items = SubmittedItem.objects.all()
+    submitted_items = SubmittedItem.objects.filter(tableNumber=table_number)
     # print(submitted_items)
     # return render(request, 'order.html', {'total_bill': total_bill})
 
@@ -76,7 +76,10 @@ def add_not_submitted_item(request):
         price = request.POST.get('price')
         quantity = int(request.POST.get('quantity'))
         image_url = request.POST.get('image_url')
-        tableNumber = request.POST.get('tableNumber')
+        table_number = request.POST.get('table_number')
+        if not table_number:
+            # Handle missing table number
+            return HttpResponse("Table number is required.", status=400)
 
         # Fetch the FoodItem instance
         try:
@@ -92,7 +95,7 @@ def add_not_submitted_item(request):
                 'price': price,
                 'quantity': quantity,
                 'image': image_url,  # Assuming you handle image uploads elsewhere
-                'tableNumber': tableNumber
+                'tableNumber': table_number
             }
         )
         if not created:
@@ -105,8 +108,11 @@ def add_not_submitted_item(request):
 
 
 def order(request):
+    table_number=request.session.get('table_number')
+    print(f"Table number from session in order view: {table_number}")
+
     not_submitted_items = NotSubmittedItem.objects.all()  # Fetch all the selected items
-    submitted_items = SubmittedItem.objects.all()
+    submitted_items = SubmittedItem.objects.filter(tableNumber=table_number)
     return render(request, 'order.html', {'not_submitted_items': not_submitted_items  ,'submitted_items':submitted_items })
 
 
@@ -125,23 +131,23 @@ def cancel_item(request, item_id):
 
 from django.shortcuts import redirect
 from django.contrib import messages
-# from .models import SubmittedItem
+from .models import SubmittedItem
 
-# def cancel_item_finish(request):
-#     if request.method == 'POST':
-#         # Get the current table number from the session
-#         table_number = request.session.get('tableNumber')
+def cancel_item_finish(request):
+    if request.method == 'POST':
+        # Get the current table number from the session
+        table_number = request.session.get('table_number')
 
-#         if table_number is not None:
-#             # Delete items in SubmittedItem where the tableNumber matches the current session table number
-#             SubmittedItem.objects.filter(tableNumber=table_number).delete()
-#             # Clear the table number from the session
-#             del request.session['tableNumber']
-#             messages.success(request, "Thank you for visiting! Your table session has ended.")
-#         else:
-#             messages.warning(request, "No table session found.")
+        if table_number is not None:
+            # Delete items in SubmittedItem where the table_number matches the current session table number
+            SubmittedItem.objects.filter(tableNumber=table_number).delete()
+            # Clear the table number from the session
+            del request.session['table_number']
+            messages.success(request, "Thank you for visiting! Your table session has ended.")
+        else:
+            messages.warning(request, "No table session found.")
 
-#     return redirect('table_home')
+    return redirect('table_home')
 
 
 # def cancel_item_finish(request):
@@ -162,22 +168,24 @@ from django.contrib import messages
 #     return redirect('table_home')  # Redirecting in case of no table number
 
 
-from django.shortcuts import redirect
-# from .models import SubmittedItem
+# from django.shortcuts import redirect
+# # from .models import SubmittedItem
 
-def cancel_item_finish(request):
-    # Fetch the table number from the session
-    table_number = request.session.get('table_number')
+# def cancel_item_finish(request):
+#     # pass
+#     # Fetch the table number from the session
+#     table_number = request.session.get('table_number')
+#     # print(table_number)
 
-    if table_number is not None:
-        # Delete all SubmittedItem entries for the current table number
-        SubmittedItem.objects.filter(tableNumber=table_number).delete()  # Use the correct field name
+#     if table_number is not None:
+#         # Delete all SubmittedItem entries for the current table number
+#         SubmittedItem.objects.filter(tableNumber=table_number).delete()  # Use the correct field name
 
-        # Optionally, add a success message or perform additional logic
-        return redirect('table_home')  # Change 'home' to your desired redirect URL
+#         # Optionally, add a success message or perform additional logic
+#         return redirect('table_home')  # Change 'home' to your desired redirect URL
 
-    # If no table number is found, you may want to handle it accordingly
-    return redirect('table_home')  # Redirecting in case of no table number
+#     # If no table number is found, you may want to handle it accordingly
+#     return redirect('table_home')  # Redirecting in case of no table number
 
 
 
@@ -198,6 +206,10 @@ def set_table_number(request):
         data = json.loads(request.body)
         table_number = data.get('table_number')
         request.session['table_number'] = table_number  # Set table number in session
+        print(f"Table number set in session: {table_number}")
+
+        # print(table_number)
+        # print(request.session['table_number'])
         return JsonResponse({'status': 'success'})
     return JsonResponse({'status': 'failed'}, status=400)
 
@@ -280,11 +292,11 @@ def submit_all_items(request):
 def save_table_number(request):
     if request.method == 'POST':
         # Get the table number from the submitted form data
-        table_number = request.POST.get('tableNumber')
+        table_number = request.POST.get('table_number')
         
         # Store the table number in the user's session
-        request.session['tableNumber'] = table_number  # This allows you to access it later
-
+        request.session['table_number'] = table_number  # This allows you to access it later
+        print("Save table ",table_number)
         # Save the submitted item in the database
         SubmittedItem.objects.create(tableNumber=table_number, )  # Save other necessary fields
 
